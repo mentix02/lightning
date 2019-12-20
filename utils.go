@@ -28,12 +28,10 @@ func extractKeyFromToken(token string) (string, error) {
 	if len(splitString) == 2 {
 		if splitString[0] == "Token" {
 			return splitString[1], nil
-		} else {
-			return "", errors.New("Invalid token.")
 		}
-	} else {
-		return "", errors.New("Authentication credentials were not provided.")
+		return "", errors.New("Invalid token.")
 	}
+	return "", errors.New("Authentication credentials were not provided.")
 }
 
 // Helper method to make sure a handler is authenticated.
@@ -42,11 +40,10 @@ func authorizedRequest(r *http.Request) (string, error) {
 	key, err := extractKeyFromToken(headerToken)
 	if err != nil {
 		return "", err
-	} else {
-		if username, err := getAuthorUsernameFromKey(key); err == nil {
-			return username, nil
-		} else {
-			return "", err
-		}
 	}
+	username, err := getAuthorUsernameFromKey(key)
+	if err == nil {
+		return username, nil
+	}
+	return "", err
 }
