@@ -1,7 +1,10 @@
 # Lightning
+![CircleCI](https://img.shields.io/circleci/build/github/mentix02/lightning/master)
+![GitHub repo size](https://img.shields.io/github/repo-size/mentix02/lightning)
+[![GitHub license](https://img.shields.io/github/license/mentix02/lightning)](https://github.com/mentix02/lightning/blob/master/LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mentix02/lightning)](https://goreportcard.com/report/github.com/mentix02/lightning)
 
-A blazingly fast API server for The Medialist.
+A **simple** & blazingly fast API server for The Medialist.
 
 Some highly critical function calls that require to be fast live over here. This project was started due to the slow
 response times achieved from the views from the server running Django. Since the majority of the backend is written in
