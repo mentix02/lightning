@@ -6,6 +6,9 @@ package main
 
 // -------- JSON Responses --------- //
 
+// DetailResponse struct is a simple JSON response
+// struct used to send detail messages usually
+// concerning errors or generic single model responses.
 type DetailResponse struct {
 	Detail string `json:"detail"`
 }
@@ -13,11 +16,18 @@ type DetailResponse struct {
 // -------- Data Structures -------- //
 
 // Singly Linked List //
+
+// Node implements the base block of
+// the List structure element for
+// holding uint32 type data.
 type Node struct {
 	next *Node
 	value uint32
 }
 
+// List struct is used as a simple data
+// structure for easy insertions and
+// traversing elements in rows.
 type List struct {
 	len uint32
 	head *Node
