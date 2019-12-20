@@ -1,0 +1,9 @@
+version: 2
+jobs:
+  build:
+    working_directory: /go/src/github.com/mentix02/lightning
+    docker:
+      - image: circleci/golang:1.12
+    steps:
+      - checkout
+      - run: go get -u github.com/mentix02/lightning

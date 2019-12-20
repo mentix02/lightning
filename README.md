@@ -1,4 +1,5 @@
 # Lightning
+[![Go Report Card](https://goreportcard.com/badge/github.com/mentix02/lightning)](https://goreportcard.com/report/github.com/mentix02/lightning)
 
 A blazingly fast API server for The Medialist.
 
