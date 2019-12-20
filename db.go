@@ -22,14 +22,14 @@ var db = getDB()
 // properly authenticated by some form of Token (header based)
 // authenticated - this would make sure that the Author with
 // the provided username exists.
-func ArticleIdsSortedByAuthorBookmarks(username string) List {
+func articleIdsSortedByAuthorBookmarks(username string) List {
 
 	// Build query.
 	q, err := db.Prepare("SELECT `bookmark_bookmark`.`article_id` FROM " +
-								   "`bookmark_bookmark` INNER JOIN `author_author`" +
-						  		   " ON (`bookmark_bookmark`.`author_id` = " +
-						  		   "`author_author`.`id`) WHERE `author_author`.`username`" +
-						  		   " = ? ORDER BY `bookmark_bookmark`.`id` DESC;")
+		"`bookmark_bookmark` INNER JOIN `author_author`" +
+		" ON (`bookmark_bookmark`.`author_id` = " +
+		"`author_author`.`id`) WHERE `author_author`.`username`" +
+		" = ? ORDER BY `bookmark_bookmark`.`id` DESC;")
 	check(err)
 
 	rows, err := q.Query(username)
@@ -73,8 +73,8 @@ func getAuthorUsernameFromKey(key string) (string, error) {
 
 	// Prepare query statement.
 	q, err := db.Prepare("SELECT `author_author`.`username` FROM `authtoken_token` INNER" +
-						   		" JOIN `author_author` ON (`authtoken_token`.`user_id` = `author_author`.`id`)" +
-						   		"WHERE `authtoken_token`.`key` = ?")
+		" JOIN `author_author` ON (`authtoken_token`.`user_id` = `author_author`.`id`)" +
+		"WHERE `authtoken_token`.`key` = ?")
 	check(err)
 
 	var username string
@@ -85,16 +85,14 @@ func getAuthorUsernameFromKey(key string) (string, error) {
 
 	if err != nil {
 		return "", errors.New("Invalid credentials.")
-	} else {
-		return username, nil
 	}
-
+	return username, nil
 }
 
 func getTokenFromUsername(username string) (string, error) {
 	q, err := db.Prepare("SELECT `authtoken_token`.`key` FROM `authtoken_token` INNER JOIN `author_author` " +
-								" ON (`authtoken_token`.`user_id` = `author_author`.`id`) WHERE" +
-								" `author_author`.`username` = ?")
+		" ON (`authtoken_token`.`user_id` = `author_author`.`id`) WHERE" +
+		" `author_author`.`username` = ?")
 	check(err)
 	var token string
 
@@ -102,15 +100,13 @@ func getTokenFromUsername(username string) (string, error) {
 
 	if err != nil {
 		return "", errors.New("Invalid credentials.")
-	} else {
-		return token, nil
 	}
-
+	return token, nil
 }
 
 func getHashedPasswordFromUsername(username string) (string, error) {
 	q, err := db.Prepare("SELECT `author_author`.`password` FROM `author_author` WHERE `author_author`.`username`" +
-								" = ? ORDER BY `author_author`.`date_joined` DESC, `author_author`.`id` DESC")
+		" = ? ORDER BY `author_author`.`date_joined` DESC, `author_author`.`id` DESC")
 	check(err)
 	var password string
 
@@ -118,16 +114,14 @@ func getHashedPasswordFromUsername(username string) (string, error) {
 
 	if err != nil {
 		return "", errors.New("Invalid credentials.")
-	} else {
-		return password, nil
 	}
-
+	return password, nil
 }
 
 func authorUsernameExists(username string) bool {
 	q, err := db.Prepare("SELECT `author_author`.`id` FROM `author_author` WHERE" +
-								" `author_author`.`username` = ? ORDER BY `author_author`.`date_joined`" +
-								"DESC, `author_author`.`id` DESC")
+		" `author_author`.`username` = ? ORDER BY `author_author`.`date_joined`" +
+		"DESC, `author_author`.`id` DESC")
 	check(err)
 
 	var exists bool
@@ -136,7 +130,6 @@ func authorUsernameExists(username string) bool {
 
 	if err != nil {
 		return false
-	} else {
-		return exists
 	}
+	return exists
 }
