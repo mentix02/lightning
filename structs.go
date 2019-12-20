@@ -21,7 +21,7 @@ type DetailResponse struct {
 // the List structure element for
 // holding uint32 type data.
 type Node struct {
-	next *Node
+	next  *Node
 	value uint32
 }
 
@@ -29,7 +29,7 @@ type Node struct {
 // structure for easy insertions and
 // traversing elements in rows.
 type List struct {
-	len uint32
+	len  uint32
 	head *Node
 	tail *Node
 }
@@ -38,7 +38,7 @@ type List struct {
 func (l *List) append(value uint32) {
 
 	// Create node with empty value.
-	node := Node{value:value}
+	node := Node{value: value}
 
 	// If length of l is 0, then head
 	// and tail are the same node.
@@ -62,7 +62,7 @@ func (l *List) append(value uint32) {
 // and traversal.
 func (l List) toSlice() []uint32 {
 	s := make([]uint32, l.len)
-	for e, i := l.head, 0; e != nil; e, i = e.next, i + 1 {
+	for e, i := l.head, 0; e != nil; e, i = e.next, i+1 {
 		s[i] = e.value
 	}
 	return s
