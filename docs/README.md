@@ -33,7 +33,7 @@ To setup your database, install MySQL from your package manager and run migratio
 To build (read: compile) the code, run - 
 
 ```sh
-$ go -i build
+$ go build -i
 ```
 
 ## Dependencies
