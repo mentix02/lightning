@@ -28,7 +28,7 @@ func generateList() List {
 
 func TestListTraversal(t *testing.T) {
 	l := generateList()
-	for e, i := l.head, 0; e != nil; e, i = e.next, i + 1 {
+	for e, i := l.head, 0; e != nil; e, i = e.next, i+1 {
 		if e.value == elements[i] {
 			continue
 		} else {
