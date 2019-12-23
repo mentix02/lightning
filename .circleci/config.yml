@@ -6,4 +6,4 @@ jobs:
       - image: circleci/golang:1.12
     steps:
       - checkout
-      - run: go get -u github.com/mentix02/lightning && cd lightning/ && go test
+      - run: go get -u github.com/mentix02/lightning && go test lightning
