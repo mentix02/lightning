@@ -133,3 +133,33 @@ func authorUsernameExists(username string) bool {
 	}
 	return exists
 }
+
+func getAuthorUsernameFromId(id uint32) (string, error) {
+	q, err := db.Prepare("SELECT `author_author`.`username` FROM `author_author` WHERE +" +
+		"`author_author`.`id` = ?")
+	check(err)
+
+	var username string
+
+	err = q.QueryRow(id).Scan(&username)
+
+	if err != nil {
+		return "", errors.New("Author not found.")
+	}
+	return username, nil
+}
+
+func getTopicNameFromId(id uint32) (string, error) {
+	q, err := db.Prepare("SELECT `topic_topic`.`name` FROM `topic_topic` WHERE +" +
+		"`topic_topic`.`id` = ?")
+	check(err)
+
+	var name string
+
+	err = q.QueryRow(id).Scan(&name)
+
+	if err != nil {
+		return "", errors.New("Topic not found.")
+	}
+	return name, nil
+}
