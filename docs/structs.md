@@ -34,10 +34,10 @@ As explained above, there's a number of reasons to host a home brewed library of
 Any future models describing the Tables will also live in [`structs.go`](../structs.go). For now, there's only a few data
 types that have been implemented - 
 
-| # | Name                      | Description                                     | Fields                               |
-|---|---------------------------|-------------------------------------------------|--------------------------------------|
-| 1 | [Node](../structs.go#L23) | The base element type used in building List.    | `value uint32, next *Node`           |
-| 2 | [List](../structs.go#L31) | A singly linked list used to hold primary keys. | `len uint32, head *Node, tail *Node` |
+| # | Name                      | Description                                     | Fields                                    |
+|---|---------------------------|-------------------------------------------------|-------------------------------------------|
+| 1 | [Node](../structs.go#L23) | The base element type used in building List.    | `value interface{}, next *Node`           |
+| 2 | [List](../structs.go#L31) | A singly linked list used to hold primary keys. | `len uint32, head *Node, tail *Node`      |
 
 ## JSON Responses
 
