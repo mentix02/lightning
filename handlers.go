@@ -3,8 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/alexandrevicenzi/unchained/pbkdf2"
 	"net/http"
+
+	"github.com/alexandrevicenzi/unchained/pbkdf2"
 )
 
 func getAuthorBookmarkedArticlesPksHandler(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +33,7 @@ func getAuthTokenFromUsernameAndPasswordHandler(w http.ResponseWriter, r *http.R
 		_ = r.ParseForm()
 
 		// Verify required POST data exists.
-		err := formBodyContainsKeys(r, [2]string{"username", "password"})
+		err := formBodyContainsKeys(r, []string{"username", "password"})
 		if err != nil {
 			w.WriteHeader(http.StatusUnprocessableEntity)
 			_ = json.NewEncoder(w).Encode(DetailResponse{"Field '" + err.Error() + "' not provided."})
@@ -59,17 +60,6 @@ func getAuthTokenFromUsernameAndPasswordHandler(w http.ResponseWriter, r *http.R
 			_ = json.NewEncoder(w).Encode(DetailResponse{"Invalid credentials."})
 			return
 		}
-
-	/* else {
-				w.WriteHeader(http.StatusUnprocessableEntity)
-				_ = json.NewEncoder(w).Encode(DetailResponse{"Field 'password' not provided."})
-				return
-			}
-		} else {
-			w.WriteHeader(http.StatusUnprocessableEntity)
-			_ = json.NewEncoder(w).Encode(DetailResponse{"Field 'username' not provided."})
-			return
-		}*/
 
 	default:
 		detail := fmt.Sprintf("Method \"%s\" not allowed.", r.Method)

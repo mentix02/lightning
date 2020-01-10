@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -46,4 +47,23 @@ func authorizedRequest(r *http.Request) (string, error) {
 		return username, nil
 	}
 	return "", err
+}
+
+// Receives a "map" like object (an HTTP POST request Form field)
+// and a list of strings acting as values for the map object to
+// determine whether they all exist in the map. If not, return an
+// error with the name of the field, else, return nil
+func formBodyContainsKeys(r *http.Request, keys []string) error {
+	var value string
+	for _, key := range keys {
+		value = r.Form.Get(key)
+		if value == "" {
+			return errors.New(key)
+		}
+	}
+	return nil
+}
+
+func logRequest(r *http.Request) {
+	log.Println(r.Method + " request at " + r.URL.Path)
 }
