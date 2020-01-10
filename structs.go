@@ -1,7 +1,3 @@
-// Commonly used data structures optimized for
-// internal use cases concerning reading rows
-// from MySQL databases. Also contains commonly
-// used JSON response structures.
 package main
 
 // -------- JSON Responses --------- //
@@ -19,10 +15,10 @@ type DetailResponse struct {
 
 // Node implements the base block of
 // the List structure element for
-// holding uint32 type data.
+// holding variable - type data.
 type Node struct {
 	next  *Node
-	value uint32
+	value interface{}
 }
 
 // List struct is used as a simple data
@@ -63,9 +59,39 @@ func (l *List) append(value uint32) {
 func (l List) toSlice() []uint32 {
 	s := make([]uint32, l.len)
 	for e, i := l.head, 0; e != nil; e, i = e.next, i+1 {
-		s[i] = e.value
+		s[i] = e.value.(uint32)
 	}
 	return s
 }
 
 // Singly Linked List //
+
+// -------- Models -------- //
+
+// Article model structure used for storing
+// Article database objects to be serialized into
+// JSON responses utilized by DetailResponse.
+type Article struct {
+	ID          uint32 `json:"id"`
+	Slug        string `json:"slug"`
+	Draft       bool   `json:"draft"`
+	Topic       string `json:"topic"`
+	Title       string `json:"title"`
+	Author      string `json:"author"`
+	Content     string `json:"content"`
+	Thumbnail   string `json:"thumbnail"`
+	Timestamp   string `json:"timestamp"`
+	Objectivity string `json:"objectivity"`
+}
+
+// Inserts the username of an Author from the provided ID
+// into the pointer of the Article structure.
+func (article *Article) insertAuthorUsernameFromAuthorID(id uint32) {
+	article.Author, _ = getAuthorUsernameFromId(id)
+}
+
+// Inserts the topic of an Article from the provided ID
+// into the pointer of the Article structure.
+func (article *Article) insertTopicNameFromTopicID(id uint32) {
+	article.Topic, _ = getTopicNameFromId(id)
+}
