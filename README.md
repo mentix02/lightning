@@ -3,6 +3,7 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/mentix02/lightning)
 [![GitHub license](https://img.shields.io/github/license/mentix02/lightning)](https://github.com/mentix02/lightning/blob/master/LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mentix02/lightning)](https://goreportcard.com/report/github.com/mentix02/lightning)
+[![Run on Repl.it](https://repl.it/badge/github/mentix02/lightning)](https://repl.it/github/mentix02/lightning)
 
 A **simple** & blazingly fast API server for The Medialist.
 
