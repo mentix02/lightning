@@ -19,3 +19,6 @@ lightning
 
 # IDE files
 .idea/
+
+# Log files
+*.log
