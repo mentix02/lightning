@@ -9,11 +9,15 @@ import (
 
 func main() {
 
+	openLogFile("dev.log")
+	log.SetFlags(log.Ldate | log.Ltime)
+
 	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/articles/recent/", getRecentArticlesHandler)
 	router.HandleFunc("/bookmark/list/", getAuthorBookmarkedArticlesPksHandler)
 	router.HandleFunc("/authors/authenticate/", getAuthTokenFromUsernameAndPasswordHandler)
 
 	log.Println("Listening on http://localhost:8080/")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":8080", requestLogger(router)))
 
 }
