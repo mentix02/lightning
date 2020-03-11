@@ -39,7 +39,7 @@ func TestListTraversal(t *testing.T) {
 
 func TestListConversionToSlice(t *testing.T) {
 	l := generateList()
-	s := l.toSlice()
+	s := l.toUint32Slice()
 	if !equal(s, elements) {
 		t.Errorf("%v != %v", s, elements)
 	}
