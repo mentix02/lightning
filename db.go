@@ -255,16 +255,16 @@ func getRecentArticles() List {
 		author, _ := getAuthorUsernameFromId(uint32(authorID))
 
 		article := Article{
-			Tags        : tags,
-			Topic       : topic,
-			Author      : author,
-			Content     : content,
-			ID          : uint32(id),
-			Title       : string(values[1]),
-			Slug        : string(values[6]),
-			Timestamp   : string(values[3]),
-			Thumbnail   : string(values[8]),
-			Objectivity : int64(objectivity),
+			Tags:        tags,
+			Topic:       topic,
+			Author:      author,
+			Content:     content,
+			ID:          uint32(id),
+			Title:       string(values[1]),
+			Slug:        string(values[6]),
+			Timestamp:   string(values[3]),
+			Thumbnail:   string(values[8]),
+			Objectivity: int64(objectivity),
 		}
 
 		articles.append(article)
