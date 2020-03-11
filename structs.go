@@ -31,7 +31,7 @@ type List struct {
 }
 
 // Adds an element to the list.
-func (l *List) append(value uint32) {
+func (l *List) append(value interface{}) {
 
 	// Create node with empty value.
 	node := Node{value: value}
@@ -54,9 +54,9 @@ func (l *List) append(value uint32) {
 	l.len++
 }
 
-// Converts node to slice for easier usage
-// and traversal.
-func (l List) toSlice() []uint32 {
+// Converts node to uint32 slice for
+// easier usage and traversal.
+func (l List) toUint32Slice() []uint32 {
 	s := make([]uint32, l.len)
 	for e, i := l.head, 0; e != nil; e, i = e.next, i+1 {
 		s[i] = e.value.(uint32)
@@ -64,7 +64,21 @@ func (l List) toSlice() []uint32 {
 	return s
 }
 
-// Singly Linked List //
+func (l List) toArticleSlice() []Article {
+	s := make([]Article, l.len)
+	for e, i := l.head, 0; e != nil; e, i = e.next, i+1 {
+		s[i] = e.value.(Article)
+	}
+	return s
+}
+
+func (l List) toStringSlice() []string {
+	s := make([]string, l.len)
+	for e, i := l.head, 0; e != nil; e, i = e.next, i+1 {
+		s[i] = e.value.(string)
+	}
+	return s
+}
 
 // -------- Models -------- //
 
@@ -72,16 +86,17 @@ func (l List) toSlice() []uint32 {
 // Article database objects to be serialized into
 // JSON responses utilized by DetailResponse.
 type Article struct {
-	ID          uint32 `json:"id"`
-	Slug        string `json:"slug"`
-	Draft       bool   `json:"draft"`
-	Topic       string `json:"topic"`
-	Title       string `json:"title"`
-	Author      string `json:"author"`
-	Content     string `json:"content"`
-	Thumbnail   string `json:"thumbnail"`
-	Timestamp   string `json:"timestamp"`
-	Objectivity string `json:"objectivity"`
+	ID          uint32   `json:"id"`
+	Tags        []string `json:"tags"`
+	Slug        string   `json:"slug"`
+	Draft       bool     `json:"draft"`
+	Topic       string   `json:"topic"`
+	Title       string   `json:"title"`
+	Author      string   `json:"author"`
+	Content     string   `json:"content"`
+	Thumbnail   string   `json:"thumbnail"`
+	Timestamp   string   `json:"timestamp"`
+	Objectivity int64    `json:"objectivity"`
 }
 
 // Inserts the username of an Author from the provided ID
