@@ -13,4 +13,5 @@ def get_key() -> str:
             'password': 'abcd1432',
         }) as r:
             f = open('token.txt', 'w+')
+            f.close()
             return r.json()['token']
