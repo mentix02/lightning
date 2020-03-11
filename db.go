@@ -149,6 +149,47 @@ func getAuthorUsernameFromId(id uint32) (string, error) {
 	return username, nil
 }
 
+func getTagsFromArticleId(id uint32) []string {
+	q, err := db.Prepare("SELECT DISTINCT `taggit_tag`.`name` FROM `taggit_tag`" +
+		" INNER JOIN `taggit_taggeditem` ON (`taggit_tag`.`id` = " + "`taggit_taggeditem`.`tag_id`)" +
+		" INNER JOIN `django_content_type` ON (`taggit_taggeditem`.`content_type_id` = `django_content_type`.`id`)" +
+		" WHERE (`django_content_type`.`app_label` = \"article\" AND `django_content_type`.`model` = \"article\"" +
+		" AND `taggit_taggeditem`.`object_id` = ?)")
+	check(err)
+
+	rows, err := q.Query(id)
+
+	if err != nil {
+		return []string{}
+	}
+
+	// To hold empty bytes and scan the row
+	// values into scanArgs.
+	values := make([]sql.RawBytes, 1)
+	scanArgs := make([]interface{}, len(values))
+
+	// To store all the tags.
+	tags := List{}
+
+	// Point scanArgs to values' index.
+	for i := range values {
+		scanArgs[i] = &values[i]
+	}
+
+	// Loop over results.
+	for rows.Next() {
+		err = rows.Scan(scanArgs...)
+		check(err)
+		tags.append(string(values[0]))
+	}
+
+	if err = rows.Err(); err != nil {
+		panic(err.Error())
+	}
+
+	return tags.toStringSlice()
+}
+
 func getTopicNameFromId(id uint32) (string, error) {
 	q, err := db.Prepare("SELECT `topic_topic`.`name` FROM `topic_topic` WHERE +" +
 		"`topic_topic`.`id` = ?")
@@ -162,4 +203,73 @@ func getTopicNameFromId(id uint32) (string, error) {
 		return "", errors.New("Topic not found.")
 	}
 	return name, nil
+}
+
+func getRecentArticles() List {
+	rows, err := db.Query("SELECT `article_article`.`id`, " +
+		"`article_article`.`title`, `article_article`.`content`, " +
+		" `article_article`.`created_on`, `article_article`.`topic_id`, `article_article`.`author_id`, " +
+		" `article_article`.`slug`, `article_article`.`objectivity`," +
+		" `article_article`.`thumbnail_url` FROM `article_article` WHERE `article_article`.`draft` =" +
+		" False ORDER BY `article_article`.`created_on` DESC, `article_article`.`updated_on` DESC, " +
+		" `article_article`.`id` DESC LIMIT 12")
+	if err != nil {
+		panic(err.Error()) // proper error handling instead of panic in your app
+	}
+
+	articles := List{}
+
+	// Get column names
+	columns, err := rows.Columns()
+	if err != nil {
+		panic(err.Error()) // proper error handling instead of panic in your app
+	}
+
+	// Make a slice for the values
+	values := make([]sql.RawBytes, len(columns))
+
+	// rows.Scan wants '[]interface{}' as an argument, so we must copy the
+	// references into such a slice
+	// See http://code.google.com/p/go-wiki/wiki/InterfaceSlice for details
+	scanArgs := make([]interface{}, len(values))
+	for i := range values {
+		scanArgs[i] = &values[i]
+	}
+
+	// Fetch rows
+	for rows.Next() {
+		// get RawBytes from data
+		err = rows.Scan(scanArgs...)
+		if err != nil {
+			panic(err.Error()) // proper error handling instead of panic in your app
+		}
+
+		// Serialize fields properly.
+		id, _ := strconv.Atoi(string(values[0]))
+		tags := getTagsFromArticleId(uint32(id))
+		content := string(values[2])[:150] + "..."
+		topicId, _ := strconv.Atoi(string(values[4]))
+		authorID, _ := strconv.Atoi(string(values[5]))
+		topic, _ := getTopicNameFromId(uint32(topicId))
+		objectivity, _ := strconv.Atoi(string(values[7]))
+		author, _ := getAuthorUsernameFromId(uint32(authorID))
+
+		article := Article{
+			Tags        : tags,
+			Topic       : topic,
+			Author      : author,
+			Content     : content,
+			ID          : uint32(id),
+			Title       : string(values[1]),
+			Slug        : string(values[6]),
+			Timestamp   : string(values[3]),
+			Thumbnail   : string(values[8]),
+			Objectivity : int64(objectivity),
+		}
+
+		articles.append(article)
+
+	}
+
+	return articles
 }
