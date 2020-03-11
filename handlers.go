@@ -17,7 +17,7 @@ func getAuthorBookmarkedArticlesPksHandler(w http.ResponseWriter, r *http.Reques
 		w.WriteHeader(http.StatusUnauthorized)
 		_ = json.NewEncoder(w).Encode(DetailResponse{err.Error()})
 	} else {
-		_ = json.NewEncoder(w).Encode(articleIdsSortedByAuthorBookmarks(username).toSlice())
+		_ = json.NewEncoder(w).Encode(articleIdsSortedByAuthorBookmarks(username).toUint32Slice())
 	}
 
 }
@@ -70,7 +70,7 @@ func getAuthTokenFromUsernameAndPasswordHandler(w http.ResponseWriter, r *http.R
 
 }
 
-func getRecentArticlesHandler(w http.ResponseWriter, r *http.Request) {
+func getRecentArticlesHandler(w http.ResponseWriter, _ *http.Request) {
 	enableCors(&w)
-	_ = json.NewEncoder(w).Encode(DetailResponse{"Invalid credentials."})
+	_ = json.NewEncoder(w).Encode(getRecentArticles().toArticleSlice())
 }
