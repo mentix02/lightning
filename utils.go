@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -64,6 +65,21 @@ func formBodyContainsKeys(r *http.Request, keys []string) error {
 	return nil
 }
 
-func logRequest(r *http.Request) {
-	log.Println(r.Method + " request at " + r.URL.Path)
+func openLogFile(logfile string) {
+	if logfile != "" {
+		lf, err := os.OpenFile(logfile, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0640)
+
+		if err != nil {
+			log.Fatal("OpenLogfile: os.OpenFile:", err)
+		}
+
+		log.SetOutput(lf)
+	}
+}
+
+func requestLogger(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Printf("%s %s\n", r.Method, r.URL)
+		handler.ServeHTTP(w, r)
+	})
 }
