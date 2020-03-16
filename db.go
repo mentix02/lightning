@@ -25,11 +25,7 @@ var db = getDB()
 func articleIdsSortedByAuthorBookmarks(username string) List {
 
 	// Build query.
-	q, err := db.Prepare("SELECT `bookmark_bookmark`.`article_id` FROM " +
-		"`bookmark_bookmark` INNER JOIN `author_author`" +
-		" ON (`bookmark_bookmark`.`author_id` = " +
-		"`author_author`.`id`) WHERE `author_author`.`username`" +
-		" = ? ORDER BY `bookmark_bookmark`.`id` DESC;")
+	q, err := db.Prepare("SELECT `bookmark_bookmark`.`article_id` FROM `bookmark_bookmark` INNER JOIN `author_author` ON (`bookmark_bookmark`.`author_id` = `author_author`.`id`) WHERE `author_author`.`username` = ? ORDER BY `bookmark_bookmark`.`id` DESC")
 	check(err)
 
 	rows, err := q.Query(username)
@@ -72,9 +68,7 @@ func articleIdsSortedByAuthorBookmarks(username string) List {
 func getAuthorUsernameFromKey(key string) (string, error) {
 
 	// Prepare query statement.
-	q, err := db.Prepare("SELECT `author_author`.`username` FROM `authtoken_token` INNER" +
-		" JOIN `author_author` ON (`authtoken_token`.`user_id` = `author_author`.`id`)" +
-		"WHERE `authtoken_token`.`key` = ?")
+	q, err := db.Prepare("SELECT `author_author`.`username` FROM `authtoken_token` INNER JOIN `author_author` ON (`authtoken_token`.`user_id` = `author_author`.`id`) WHERE `authtoken_token`.`key` = ?")
 	check(err)
 
 	var username string
@@ -90,9 +84,7 @@ func getAuthorUsernameFromKey(key string) (string, error) {
 }
 
 func getTokenFromUsername(username string) (string, error) {
-	q, err := db.Prepare("SELECT `authtoken_token`.`key` FROM `authtoken_token` INNER JOIN `author_author` " +
-		" ON (`authtoken_token`.`user_id` = `author_author`.`id`) WHERE" +
-		" `author_author`.`username` = ?")
+	q, err := db.Prepare("SELECT `authtoken_token`.`key` FROM `authtoken_token` INNER JOIN `author_author` ON (`authtoken_token`.`user_id` = `author_author`.`id`) WHERE `author_author`.`username` = ?")
 	check(err)
 	var token string
 
@@ -105,8 +97,7 @@ func getTokenFromUsername(username string) (string, error) {
 }
 
 func getHashedPasswordFromUsername(username string) (string, error) {
-	q, err := db.Prepare("SELECT `author_author`.`password` FROM `author_author` WHERE `author_author`.`username`" +
-		" = ? ORDER BY `author_author`.`date_joined` DESC, `author_author`.`id` DESC")
+	q, err := db.Prepare("SELECT `author_author`.`password` FROM `author_author` WHERE `author_author`.`username` = ? ORDER BY `author_author`.`date_joined` DESC, `author_author`.`id` DESC")
 	check(err)
 	var password string
 
@@ -119,9 +110,7 @@ func getHashedPasswordFromUsername(username string) (string, error) {
 }
 
 func authorUsernameExists(username string) bool {
-	q, err := db.Prepare("SELECT `author_author`.`id` FROM `author_author` WHERE" +
-		" `author_author`.`username` = ? ORDER BY `author_author`.`date_joined`" +
-		"DESC, `author_author`.`id` DESC")
+	q, err := db.Prepare("SELECT `author_author`.`id` FROM `author_author` WHERE `author_author`.`username` = ? ORDER BY `author_author`.`date_joined` DESC, `author_author`.`id` DESC")
 	check(err)
 
 	var exists bool
@@ -191,8 +180,7 @@ func getTagsFromArticleId(id uint32) []string {
 }
 
 func getTopicNameFromId(id uint32) (string, error) {
-	q, err := db.Prepare("SELECT `topic_topic`.`name` FROM `topic_topic` WHERE +" +
-		"`topic_topic`.`id` = ?")
+	q, err := db.Prepare("SELECT `topic_topic`.`name` FROM `topic_topic` WHERE `topic_topic`.`id` = ?")
 	check(err)
 
 	var name string
@@ -272,4 +260,27 @@ func getRecentArticles() List {
 	}
 
 	return articles
+}
+
+func getArticleDetail(slug string) (Article, error) {
+	query, err := db.Prepare("SELECT `article_article`.`id`, `article_article`.`content`, `article_article`.`title`, `article_article`.`draft`, `article_article`.`created_on`, `article_article`.`topic_id`, `article_article`.`author_id`, `article_article`.`slug`, `article_article`.`thumbnail_url`, `article_article`.`objectivity` FROM `article_article` WHERE `article_article`.`slug` = ? ORDER BY `article_article`.`created_on` DESC, `article_article`.`updated_on` DESC, `article_article`.`id` DESC")
+	check(err)
+
+	var article Article
+	var topicId, authorId uint32
+
+	err = query.QueryRow(slug).Scan(&article.ID, &article.Content, &article.Title, &article.Draft, &article.Timestamp,
+		&topicId, &authorId, &article.Slug, &article.Thumbnail, &article.Objectivity)
+
+	if err != nil {
+		return Article{}, errors.New("Not found.")
+	}
+
+	topicName, _ := getTopicNameFromId(topicId)
+	authorName, _ := getAuthorUsernameFromId(authorId)
+
+	article.Topic = topicName
+	article.Author = authorName
+
+	return article, nil
 }
