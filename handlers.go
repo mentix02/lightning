@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"net/http"
 
 	"github.com/alexandrevicenzi/unchained/pbkdf2"
@@ -68,6 +69,18 @@ func getAuthTokenFromUsernameAndPasswordHandler(w http.ResponseWriter, r *http.R
 
 	}
 
+}
+
+func getArticleDetailHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	slug := mux.Vars(r)["slug"]
+	article, err := getArticleDetail(slug)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		_ = json.NewEncoder(w).Encode(DetailResponse{err.Error()})
+	} else {
+		_ = json.NewEncoder(w).Encode(article)
+	}
 }
 
 func getRecentArticlesHandler(w http.ResponseWriter, _ *http.Request) {

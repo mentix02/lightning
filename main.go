@@ -14,6 +14,7 @@ func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/articles/recent/", getRecentArticlesHandler)
+	router.HandleFunc("/articles/detail/{slug}/", getArticleDetailHandler)
 	router.HandleFunc("/bookmark/list/", getAuthorBookmarkedArticlesPksHandler)
 	router.HandleFunc("/authors/authenticate/", getAuthTokenFromUsernameAndPasswordHandler)
 
