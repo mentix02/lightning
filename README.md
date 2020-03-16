@@ -1,6 +1,6 @@
 # Lightning
 ![CircleCI](https://img.shields.io/circleci/build/github/mentix02/lightning/master)
-![GitHub repo size](https://img.shields.io/github/repo-size/mentix02/lightning)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/mentix02/lightning)
 [![GitHub license](https://img.shields.io/github/license/mentix02/lightning)](https://github.com/mentix02/lightning/blob/master/LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mentix02/lightning)](https://goreportcard.com/report/github.com/mentix02/lightning)
 
